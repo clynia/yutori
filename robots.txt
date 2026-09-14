@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://PENDIENTE-CONFIRMAR-dominio/sitemap.xml
