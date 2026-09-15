@@ -10,7 +10,6 @@
   --t-foto:clamp(2.3rem, 5.2vw, 5.6rem);
   --t-seccion:clamp(2.1rem, 4.4vw, 4.7rem);
   --t-menor:clamp(1.9rem, 3.6vw, 3.8rem);
-  --t-pilar:clamp(2.5rem, 6vw, 6.6rem);
 }
 *,*::before,*::after{ box-sizing:border-box }
 html{ -webkit-text-size-adjust:100%; scroll-behavior:smooth; scroll-padding-top:84px }
@@ -125,15 +124,15 @@ p,li,dd{ text-align:justify; hyphens:manual; -webkit-hyphens:manual }
 @media (min-width:900px){ .lista-perfiles article{ grid-template-columns:minmax(0, 1fr) minmax(0, 1fr); align-items:start } .lista-perfiles p{ padding-top:.3em } }
 
 /* servicios */
-.servicios h2{ font-size:clamp(1.6rem, 2.9vw, 2.9rem); color:rgba(246,245,241,.62); max-width:24ch }
-.servicios .sub{ max-width:36rem; margin-top:20px }
-.pilar{ display:grid; gap:18px 6vw; margin-top:clamp(56px, 7vw, 110px); padding-top:clamp(28px, 3vw, 44px); border-top:1px solid rgba(246,245,241,.16) }
-.pilar h3{ font-size:var(--t-pilar); line-height:.94; letter-spacing:-.02em }
+.servicios h2{ font-size:var(--t-seccion); max-width:18ch }
+.servicios .sub{ max-width:36rem; margin-top:clamp(20px, 2.4vw, 32px) }
+.pilares{ display:grid; gap:52px 4vw; margin-top:clamp(44px, 5vw, 80px); padding-top:clamp(32px, 3.4vw, 52px); border-top:1px solid rgba(246,245,241,.16) }
+.pilar h3{ font-size:clamp(1.9rem, 2.6vw, 2.6rem); line-height:1.02 }
 .pilar h3 span{ color:var(--oro) }
-.pilar ul{ list-style:none; padding:0 }
-.pilar li{ color:rgba(246,245,241,.72); padding-block:8px }
-.pilar li strong{ display:block; font:400 clamp(1.15rem, 1.55vw, 1.4rem)/1.24 var(--serif); color:#fff; margin-bottom:2px; text-align:left }
-@media (min-width:1000px){ .pilar{ grid-template-columns:minmax(0, 1.25fr) minmax(0, 1fr); align-items:start } }
+.pilar ul{ list-style:none; padding:0; margin-top:clamp(16px, 1.8vw, 26px) }
+.pilar li{ color:rgba(246,245,241,.72); padding-block:9px; font-size:.97rem; line-height:1.62 }
+.pilar li strong{ display:block; font:400 clamp(1.1rem, 1.3vw, 1.25rem)/1.26 var(--serif); color:#fff; margin-bottom:4px; text-align:left }
+@media (min-width:1000px){ .pilares{ grid-template-columns:repeat(3, minmax(0, 1fr)); align-items:start } }
 
 /* diagnostico */
 .diagnostico h2{ font-size:var(--t-seccion); max-width:12ch }
