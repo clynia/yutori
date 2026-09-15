@@ -9,11 +9,11 @@ const CONFIG = {
 
 (() => {
   const cab = document.getElementById("cab");
-  const portada = document.getElementById("inicio");
-  if (cab && portada && "IntersectionObserver" in window) {
-    new IntersectionObserver(([e]) => cab.classList.toggle("solida", !e.isIntersecting), { rootMargin: "-84px 0px 0px 0px" }).observe(portada);
-  } else if (cab) {
-    cab.classList.add("solida");
+  if (cab) {
+    // la cabecera se vuelve solida en cuanto se baja, para que el menu no se mezcle con la pagina
+    const fijar = () => cab.classList.toggle("solida", window.scrollY > 8);
+    fijar();
+    window.addEventListener("scroll", fijar, { passive: true });
   }
   const anio = document.getElementById("anio");
   if (anio) anio.textContent = String(new Date().getFullYear());
