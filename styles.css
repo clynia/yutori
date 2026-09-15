@@ -4,7 +4,6 @@
   --oro:#C89659; --oro-claro:#D9B274; --oro-texto:#7D5A29; --blanco:#F6F5F1;
   --serif:"Ibarra Real Nova", Georgia, "Times New Roman", serif;
   --sans:"Hanken Grotesk", "Segoe UI", system-ui, sans-serif;
-  --kana:"Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
   --lado:clamp(22px, 5.6vw, 104px);
   --t-portada:clamp(2.6rem, 6.2vw, 7.6rem);
   --t-foto:clamp(2.3rem, 5.2vw, 5.6rem);
@@ -71,7 +70,6 @@ p,li,dd{ text-align:justify; hyphens:manual; -webkit-hyphens:manual }
 .acciones{ display:flex; flex-wrap:wrap; align-items:center; gap:18px 30px; margin-top:clamp(28px, 3.4vw, 44px) }
 .enso-hero{ position:absolute; z-index:0; right:1.5vw; top:clamp(84px, 13vh, 170px); width:min(37vw, 600px); pointer-events:none }
 .enso-hero img{ width:100%; opacity:.9; -webkit-mask-image:conic-gradient(from 120deg, transparent 0 calc(100% - var(--giro)), #000 calc(100% - var(--giro)) 100%); mask-image:conic-gradient(from 120deg, transparent 0 calc(100% - var(--giro)), #000 calc(100% - var(--giro)) 100%); animation:trazo 3s cubic-bezier(.62,.04,.3,1) .3s both }
-.enso-hero span{ position:absolute; right:9%; top:1%; font:500 clamp(1.2rem, 2.2vw, 2.2rem)/1 var(--kana); color:var(--oro-claro); writing-mode:vertical-rl; letter-spacing:.16em }
 @property --giro{ syntax:"<percentage>"; inherits:false; initial-value:100% }
 @keyframes trazo{ from{ --giro:0% } to{ --giro:100% } }
 @media (max-width:760px){
@@ -81,15 +79,21 @@ p,li,dd{ text-align:justify; hyphens:manual; -webkit-hyphens:manual }
 }
 
 /* filosofia */
-.filosofia{ display:grid; background:var(--papel) }
-.filo-texto{ position:relative; padding:clamp(96px, 12vw, 190px) var(--lado) }
+.filosofia{ background:var(--papel) }
+.filo-texto{ max-width:calc(1480px + var(--lado) * 2); margin-inline:auto; padding:clamp(96px, 12vw, 190px) var(--lado) }
 .filo-texto h2{ font-size:var(--t-seccion); max-width:9ch }
-.filo-texto p{ max-width:34rem; margin-top:24px }
-.filo-texto p.primero{ margin-top:clamp(28px, 3.4vw, 48px) }
-.filo-texto .kana{ position:absolute; top:clamp(96px, 12vw, 190px); right:var(--lado); font:500 clamp(2rem, 3.6vw, 3.8rem)/1 var(--kana); color:var(--oro); writing-mode:vertical-rl; letter-spacing:.14em }
-.filo-foto img{ width:100%; height:100%; min-height:60vh; object-fit:cover }
-@media (min-width:980px){ .filosofia{ grid-template-columns:minmax(0, .92fr) minmax(0, 1.08fr); min-height:92vh } }
-@media (max-width:979px){ .filo-texto .kana{ position:static; display:block; writing-mode:horizontal-tb; letter-spacing:.22em; margin-bottom:22px; font-size:2rem } }
+.filo-parrafos p{ max-width:34rem; margin-top:24px }
+.filo-parrafos p.primero{ margin-top:clamp(28px, 3.4vw, 48px) }
+.filo-marca{ display:flex; align-items:center; gap:20px; margin-top:clamp(36px, 4.5vw, 64px) }
+.filo-marca img{ width:clamp(56px, 5vw, 76px); height:auto }
+.filo-marca p{ max-width:22rem; font:400 clamp(1.1rem, 1.45vw, 1.35rem)/1.3 var(--serif); color:var(--tinta); text-align:left }
+@media (min-width:980px){
+  .filo-texto{ display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 1fr); column-gap:8vw; align-items:start }
+  .filo-texto h2{ grid-column:1; grid-row:1 }
+  .filo-marca{ grid-column:1; grid-row:2 }
+  .filo-parrafos{ grid-column:2; grid-row:1 / span 2 }
+  .filo-parrafos p.primero{ margin-top:.6em }
+}
 
 /* muchas manos */
 .manos h2{ font-size:var(--t-seccion); max-width:14ch }
@@ -100,7 +104,7 @@ p,li,dd{ text-align:justify; hyphens:manual; -webkit-hyphens:manual }
 
 /* conservar */
 .conservar{ min-height:92vh; display:flex; align-items:center; background:var(--papel); color:var(--texto); --velo:linear-gradient(90deg, rgba(243,242,238,.97) 0%, rgba(243,242,238,.9) 36%, rgba(243,242,238,.36) 64%, rgba(243,242,238,0) 84%) }
-.conservar .fondo{ object-position:66% 40% }
+.conservar .fondo{ object-position:50% 45% }
 .conservar .env{ padding-block:clamp(100px, 12vw, 180px) }
 .conservar h2{ color:var(--tinta); font-size:var(--t-foto); max-width:10ch }
 .conservar p{ color:var(--texto); max-width:31rem; margin-top:clamp(24px, 3vw, 44px); font-size:clamp(1.08rem, 1.4vw, 1.28rem) }
