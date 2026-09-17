@@ -45,10 +45,34 @@ p,li,dd{ text-align:justify; hyphens:manual; -webkit-hyphens:manual }
 .menu{ display:none; list-style:none; padding:0; margin:0; gap:clamp(18px, 2.2vw, 34px) }
 .menu a{ text-decoration:none; font-size:.95rem }
 .menu a:hover{ text-decoration:underline; text-underline-offset:.35em }
-.cab.solida{ background:rgba(243,242,238,.96); color:var(--tinta); box-shadow:0 1px 0 rgba(11,13,20,.08) }
+.cab.solida{ background:var(--papel); color:var(--tinta); box-shadow:0 1px 0 rgba(11,13,20,.08) }
 .cab.solida .logo-claro{ display:none }
 .cab.solida .logo-oscuro{ display:block }
 @media (min-width:1000px){ .menu{ display:flex } }
+@media (max-width:999px){ .cab nav{ display:none } }
+
+/* selector de idioma */
+.cab-acciones{ display:flex; align-items:center; gap:clamp(6px, 1.6vw, 22px) }
+.idioma{ display:inline-flex; align-items:center; justify-content:center; min-width:44px; min-height:44px; padding:0 6px; font:500 .95rem/1 var(--sans); color:inherit; text-decoration:none }
+.idioma:hover{ text-decoration:underline; text-underline-offset:.35em }
+.idioma-largo{ display:none }
+@media (min-width:1000px){ .idioma-corto{ display:none } .idioma-largo{ display:inline } }
+.cabecera .cab-acciones{ color:var(--tinta) }
+.cabecera .envoltura{ gap:16px }
+
+/* en ingles las palabras son mas largas: algo mas de ancho para que los titulares no pasen a cuatro lineas */
+:lang(en) .portada h1{ max-width:14ch }
+:lang(en) .filo-texto h2{ max-width:12ch }
+:lang(en) .conservar h2{ max-width:13ch }
+:lang(en) .diagnostico h2{ max-width:15ch }
+:lang(en) .fuera h2{ max-width:15ch }
+:lang(en) .dinero h2{ max-width:15ch }
+:lang(en) .equipo h2{ max-width:15ch }
+@media (max-width:359px){
+  .cab .marca .m-enso,.cabecera .marca .m-enso{ height:34px }
+  .cab .marca .m-texto,.cabecera .marca .m-texto{ height:26px }
+  .cab-acciones .btn{ padding:.75em 1em }
+}
 
 /* secciones con foto */
 .foto-seccion{ position:relative; isolation:isolate; overflow:hidden; background:var(--tinta); color:var(--blanco) }
@@ -96,7 +120,7 @@ p,li,dd{ text-align:justify; hyphens:manual; -webkit-hyphens:manual }
 }
 
 /* muchas manos */
-.manos h2{ font-size:var(--t-seccion); max-width:14ch }
+.manos h2{ font-size:var(--t-seccion); max-width:18ch }
 .cascada{ list-style:none; padding:0; margin-top:clamp(44px, 6.5vw, 104px) }
 .cascada li{ font:400 clamp(1.4rem, 2.6vw, 2.7rem)/1.22 var(--serif); letter-spacing:-.006em; color:rgba(246,245,241,.48); text-align:left; margin-top:.18em }
 .cascada b{ font-weight:400; color:#fff }
@@ -270,7 +294,7 @@ kbd{ padding:2px 6px; border:1px solid rgba(246,245,241,.3); border-radius:3px; 
 
 /* paginas legales (marcado heredado) */
 .envoltura{ width:100%; max-width:calc(1480px + var(--lado) * 2); margin-inline:auto; padding-inline:var(--lado) }
-.cabecera{ position:sticky; top:0; z-index:60; background:rgba(243,242,238,.96); box-shadow:0 1px 0 rgba(11,13,20,.08) }
+.cabecera{ position:sticky; top:0; z-index:60; background:var(--papel); box-shadow:0 1px 0 rgba(11,13,20,.08) }
 .cabecera .envoltura{ display:flex; align-items:center; justify-content:space-between; height:84px }
 .cabecera .m-enso{ height:40px; width:auto }
 .cabecera .m-texto{ height:32px; width:auto }

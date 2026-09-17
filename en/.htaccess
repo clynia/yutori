@@ -1,0 +1,2 @@
+# Pagina propia en ingles para las direcciones de /en/ que no existen
+ErrorDocument 404 /en/404.html
