@@ -1,0 +1,2 @@
+# Pagina propia para las direcciones que no existen
+ErrorDocument 404 /404.html
