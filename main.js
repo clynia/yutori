@@ -24,6 +24,8 @@ const TEXTOS = INGLES
       asunto: "First conversation with Yutori",
       etiquetas: ["Name", "Profile", "Would like help with", "Approximate wealth", "Email", "Phone"],
       idioma: "Language: English",
+      menu: "Menu",
+      cerrar: "Close",
       preparado: (destino) => `We have drafted your message in your email app: all you need to do is send it. If it did not open, write to us at ${destino}.`,
       recibido: "We will write to you personally to find a time that suits you.",
       error: "We could not send the form. ",
@@ -43,6 +45,8 @@ const TEXTOS = INGLES
       asunto: "Primera conversación con Yutori",
       etiquetas: ["Nombre", "Perfil", "Qué quiere resolver", "Patrimonio aproximado", "Correo", "Teléfono"],
       idioma: "",
+      menu: "Menú",
+      cerrar: "Cerrar",
       preparado: (destino) => `Hemos preparado su mensaje en su programa de correo: solo tiene que enviarlo. Si no se ha abierto, escríbanos a ${destino}.`,
       recibido: "Le escribiremos personalmente para buscar un momento que le venga bien.",
       error: "No hemos podido enviar el formulario. ",
@@ -91,6 +95,48 @@ const SECCIONES = {
     const fijar = () => cab.classList.toggle("solida", window.scrollY > 8);
     fijar();
     window.addEventListener("scroll", fijar, { passive: true });
+
+    // menu del telefono y la tableta: abre el mismo nav a pantalla completa y deja el resto de la pagina inerte
+    const boton = cab.querySelector(".abre-menu");
+    const menu = document.getElementById("menu-principal");
+    if (boton && menu) {
+      const inertes = [document.querySelector(".salto"), document.querySelector("main"), document.querySelector("footer.pie")].filter(Boolean);
+      const abrir = (si) => {
+        cab.classList.toggle("abierta", si);
+        boton.setAttribute("aria-expanded", String(si));
+        boton.textContent = si ? TEXTOS.cerrar : TEXTOS.menu;
+        document.body.style.overflow = si ? "hidden" : "";
+        inertes.forEach((el) => { el.inert = si; });
+        if (si) {
+          const primero = menu.querySelector("a");
+          if (primero) primero.focus({ preventScroll: true });
+        }
+      };
+      boton.addEventListener("click", () => abrir(!cab.classList.contains("abierta")));
+      // cualquier enlace de la cabecera cierra el menu: los del nav y tambien la marca
+      cab.addEventListener("click", (e) => { if (e.target.closest("a") && cab.classList.contains("abierta")) abrir(false); });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && cab.classList.contains("abierta")) {
+          abrir(false);
+          boton.focus();
+        }
+      });
+      window.matchMedia("(min-width:1000px)").addEventListener("change", () => {
+        if (cab.classList.contains("abierta")) abrir(false);
+      });
+    }
+
+    // en el telefono no hay dos llamadas iguales a la vista: Hablemos se aparta mientras se ven la de la portada o el contacto
+    const llamadas = [document.querySelector(".portada .acciones"), document.querySelector("section.contacto")].filter(Boolean);
+    if (llamadas.length && "IntersectionObserver" in window) {
+      const vistas = new Set();
+      // lo que queda tapado por la cabecera fija no cuenta como visto
+      const observador = new IntersectionObserver((entradas) => {
+        entradas.forEach((e) => (e.isIntersecting ? vistas.add(e.target) : vistas.delete(e.target)));
+        cab.classList.toggle("sin-cta", vistas.size > 0);
+      }, { rootMargin: `-${cab.offsetHeight}px 0px 0px 0px` });
+      llamadas.forEach((el) => observador.observe(el));
+    }
   }
   const anio = document.getElementById("anio");
   if (anio) anio.textContent = String(new Date().getFullYear());
@@ -123,22 +169,53 @@ const SECCIONES = {
   const atras = document.getElementById("guia-atras");
   const sig = document.getElementById("guia-sig");
   const error = document.getElementById("guia-error");
+  const pie = form.querySelector(".guia-pie");
   const reducir = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const telefono = window.matchMedia("(max-width:760px)");
   let actual = 0;
+  // avance automatico al elegir una opcion unica: un solo temporizador pendiente
+  let temporizador = 0;
+  // justo despues de cambiar de paso se ignoran los toques en las opciones: un segundo toque rapido no marca nada del paso nuevo
+  let calmaHasta = 0;
+
+  const limpiarError = () => {
+    error.textContent = "";
+    pasos.forEach((p) => {
+      p.removeAttribute("aria-describedby");
+      p.querySelectorAll("[aria-invalid]").forEach((campo) => campo.removeAttribute("aria-invalid"));
+    });
+  };
 
   const mostrar = (n, enfocar = true) => {
+    clearTimeout(temporizador);
     actual = n;
     const final = n === total;
     pasos.forEach((p, k) => p.classList.toggle("activo", k === n));
+    limpiarError();
     contador.textContent = final ? TEXTOS.listo : TEXTOS.paso(n + 1, total);
     barra.style.width = `${((final ? total : n) / total) * 100}%`;
     atras.hidden = n === 0 || final;
     sig.hidden = final;
     sig.textContent = n === total - 1 ? TEXTOS.enviar : TEXTOS.continuar;
-    error.textContent = "";
     if (enfocar) {
-      const foco = pasos[n].querySelector("input:not(.trampa)") || pasos[n];
+      calmaHasta = performance.now() + 350;
+      const paso = pasos[n];
+      let foco = paso;
+      if (paso.dataset.tipo === "unica" || paso.dataset.tipo === "multiple") {
+        // en los pasos de opciones se enfoca el grupo: se lee la pregunta y ninguna opcion parece elegida
+        paso.tabIndex = -1;
+      } else {
+        foco = paso.querySelector("input:not(.trampa)") || paso;
+      }
       foco.focus({ preventScroll: true });
+      if (cab) {
+        const arriba = form.getBoundingClientRect().top;
+        const sitio = cab.offsetHeight + (parseFloat(getComputedStyle(form).scrollMarginTop) || 0);
+        // en el telefono cada paso empieza arriba, bajo la cabecera, para que sus opciones no queden tapadas por la barra de botones;
+        // en pantallas mayores solo se recoloca si el formulario ha quedado por encima de la cabecera
+        const recolocar = telefono.matches ? Math.abs(arriba - sitio) > 24 : arriba < cab.offsetHeight;
+        if (recolocar) form.scrollIntoView({ block: "start", behavior: reducir ? "auto" : "smooth" });
+      }
     }
   };
 
@@ -221,15 +298,53 @@ const SECCIONES = {
 
   const avanzar = () => {
     const fallo = problema(actual);
-    if (fallo) { error.textContent = fallo; return; }
+    if (fallo) {
+      error.textContent = fallo;
+      // el error queda asociado al paso y, si viene de un campo, al propio campo
+      const paso = pasos[actual];
+      paso.setAttribute("aria-describedby", "guia-error");
+      paso.querySelectorAll("[aria-invalid]").forEach((c) => c.removeAttribute("aria-invalid"));
+      const campo = paso.dataset.tipo === "texto" ? paso.querySelector("input")
+        : fallo === TEXTOS.correo ? paso.querySelector("input[type=email]") : null;
+      if (campo) campo.setAttribute("aria-invalid", "true");
+      // el error va encima de los botones; si el pie no esta a la vista (telefono en horizontal), se trae
+      const r = pie.getBoundingClientRect();
+      if (r.bottom > window.innerHeight || r.top < (cab ? cab.offsetHeight : 0)) {
+        pie.scrollIntoView({ block: "nearest", behavior: "instant" });
+      }
+      return;
+    }
     if (actual < total - 1) mostrar(actual + 1);
     else enviar();
   };
 
   form.addEventListener("submit", (e) => { e.preventDefault(); avanzar(); });
   atras.addEventListener("click", () => mostrar(Math.max(0, actual - 1)));
+
+  // el aviso desaparece en cuanto el paso queda bien, sin esperar a pulsar Continuar
+  form.addEventListener("input", () => {
+    if (error.textContent && problema(actual) !== error.textContent) limpiarError();
+  });
+
+  // solo avanza sola una opcion elegida con el dedo o el raton; con las flechas se recorren las opciones
+  // y se continua con Intro o con el boton
+  let conPuntero = false;
+  form.addEventListener("pointerdown", () => { conPuntero = true; });
+  form.addEventListener("keydown", (e) => {
+    conPuntero = false;
+    if (e.key === "Enter" && (e.target.type === "radio" || e.target.type === "checkbox")) {
+      e.preventDefault();
+      avanzar();
+    }
+  });
+  form.addEventListener("click", (e) => {
+    if (performance.now() < calmaHasta && e.target.closest(".opcion")) e.preventDefault();
+  }, true);
   form.addEventListener("change", (e) => {
-    if (e.target.type === "radio" && pasos[actual].contains(e.target)) setTimeout(avanzar, reducir ? 0 : 260);
+    if (e.target.type !== "radio" || !conPuntero || !pasos[actual].contains(e.target)) return;
+    const paso = actual;
+    clearTimeout(temporizador);
+    temporizador = setTimeout(() => { if (actual === paso) avanzar(); }, reducir ? 0 : 260);
   });
   mostrar(0, false);
 })();
